@@ -3,6 +3,11 @@
   (:require [re-frame.core :refer [reg-sub subscribe]]))
 
 (reg-sub
-  :alphabet
+  :alphabets
   (fn [db _]
-    (:alphabet (:quiz db))))
+    (:alphabets db)))
+
+(reg-sub
+  :panel
+  (fn [db _]
+    (:panel db)))
