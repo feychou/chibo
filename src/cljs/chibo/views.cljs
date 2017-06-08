@@ -2,6 +2,6 @@
   (:require [re-frame.core :as re-frame]))
 
 (defn main-panel []
-  (let [name (re-frame/subscribe [:name])]
+  (let [alphabet (re-frame/subscribe [:alphabet])]
     (fn []
-      [:div "Hello from " @name])))
+      [:div "Hello from " @alphabet])))

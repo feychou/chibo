@@ -1,8 +1,8 @@
 (ns chibo.subs
   (:require-macros [reagent.ratom :refer [reaction]])
-  (:require [re-frame.core :as re-frame]))
+  (:require [re-frame.core :refer [reg-sub subscribe]]))
 
-(re-frame/reg-sub
- :name
- (fn [db]
-   (:name db)))
+(reg-sub
+  :alphabet
+  (fn [db _]
+    (:alphabet (:quiz db))))
