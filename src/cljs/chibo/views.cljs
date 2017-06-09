@@ -1,14 +1,14 @@
 (ns chibo.views
-  (:require [re-frame.core :as re-frame]))
+  (:require [re-frame.core :refer [subscribe dispatch]]))
 
 (defn main-panel []
-  (let [alphabets (re-frame/subscribe [:alphabets])
-        panel (re-frame/subscribe [:panel])]
+  (let [alphabets (subscribe [:alphabets])
+        panel (subscribe [:panel])]
     (fn []
       (case @panel
           "alphabet-choice" [:div.container
-                              [:button {:type "button" :value (first @alphabets) :on-click #(re-frame/dispatch [:alphabet-picked (-> % .-value)])} (first @alphabets)]
-                              [:button {:type "button" :value (second @alphabets) :on-click #(re-frame/dispatch [:alphabet-picked (-> % .-value)])} (second @alphabets)]]
+                              [:button {:type "button" :value (first @alphabets) :on-click #(dispatch [:alphabet-picked (-> % .-value)])} (first @alphabets)]
+                              [:button {:type "button" :value (second @alphabets) :on-click #(dispatch [:alphabet-picked (-> % .-value)])} (second @alphabets)]]
           "quiz" [:div.container
                     [:span.char]
                     [:ul.guesses

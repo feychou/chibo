@@ -1,13 +1,13 @@
 (ns chibo.events
-  (:require [re-frame.core :as rf]
+  (:require [re-frame.core :refer [reg-event-db]]
             [chibo.db :as db]))
 
-(rf/reg-event-db
+(reg-event-db
  :initialize-db
  (fn  [_ _]
    db/default-db))
 
-(rf/reg-event-db
+(reg-event-db
   :alphabet-picked
   (fn [db [alphabet]]
     (assoc db :alphabet alphabet :panel "quiz"))) 
