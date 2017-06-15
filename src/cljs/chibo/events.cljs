@@ -10,4 +10,4 @@
 (reg-event-db
   :alphabet-picked
   (fn [db [alphabet]]
-    (assoc db :alphabet alphabet :panel "quiz"))) 
+    (assoc db :alphabet alphabet :panel "options"))) 
