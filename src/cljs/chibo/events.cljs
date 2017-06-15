@@ -11,11 +11,16 @@
   :alphabet-picked
   trim-v
   (fn [db [alphabet]]
-    (update-in (assoc db :panel "options") [:quiz] merge {:alphabet alphabet})))
+    (update-in (assoc db :panel "quiz-options") [:quiz] merge {:alphabet alphabet})))
 
 (reg-event-db
   :quiz-options-filtered
   trim-v
   (fn [db [options]]
-    (js/console.log options)
     (update-in db [:quiz] merge options)))
+
+(reg-event-db
+  :quiz-started
+  trim-v
+  (fn [db]
+    (assoc db :panel "quiz")))

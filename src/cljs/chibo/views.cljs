@@ -2,20 +2,11 @@
   (:require [re-frame.core :refer [subscribe dispatch]]))
 
 (defn main-panel []
-  (let [alphabets (subscribe [:alphabets])
-        panel (subscribe [:panel])]
+  (let [panel (subscribe [:panel])]
     (fn []
       (case @panel
-          "alphabet-choice" [:div.container
-                              [:button {:type "button"
-                                        :value (first @alphabets)
-                                        :on-click #(dispatch [:alphabet-picked (-> % .-target .-value)])}
-                                        (first @alphabets)]
-                              [:button {:type "button"
-                                        :value (second @alphabets)
-                                        :on-click #(dispatch [:alphabet-picked (-> % .-target .-value)])}
-                                        (second @alphabets)]]
-          "options" [:div.container
+          "alphabet-choice" [alphabet-choice]
+          "quiz-options" [:div.container
                       [:form
                         [:input {:id "free-text-true"
                                  :name "free-text"
@@ -48,3 +39,18 @@
                                  :value false
                                  :on-click #(dispatch [:quiz-options-filtered {:quiz-type "mixed"}])}]
                         [:label {:for "mixed"} "Mixed"]]]))))
+
+(defn alphabet-choice []
+  (let [alphabets (subscribe [:alphabets])]
+    [:div.container
+      [:button {:type "button"
+                :value (first @alphabets)
+                :on-click #(dispatch [:alphabet-picked (-> % .-target .-value)])}
+                (first @alphabets)]
+      [:button {:type "button"
+                :value (second @alphabets)
+                :on-click #(dispatch [:alphabet-picked (-> % .-target .-value)])}
+                (second @alphabets)]]))
+
+(defn quiz-options []
+  )

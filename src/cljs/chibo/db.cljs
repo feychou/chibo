@@ -7,7 +7,7 @@
   (s/def ::free-text bool?)
   (s/def ::quiz-type #{"to-romaji" "from-romaji" "mixed"})
   (s/def ::alphabet #{"hiragana" "katakana"})
-  (s/def ::panel #{"alphabet-choice" "options" "quiz"})
+  (s/def ::panel #{"alphabet-choice" "quiz-options" "quiz"})
   (s/def ::quiz (s/keys req-un [::corrent-guesses ::incorrect-guesses ::quiz-type ::alphabet]))
   (s/def ::db (s/keys req-un [::quiz]))
 )
