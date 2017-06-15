@@ -1,6 +1,10 @@
 (ns chibo.subs
-  (:require-macros [reagent.ratom :refer [reaction]])
-  (:require [re-frame.core :refer [reg-sub subscribe]]))
+  (:require [re-frame.core :refer [reg-sub]]))
+
+(reg-sub
+  :quiz-options
+  (fn [db _]
+    (select-keys (:quiz db) [:quiz-type :free-text])))
 
 (reg-sub
   :alphabets

@@ -18,5 +18,5 @@
    :quiz {:alphabet "hiragana"
           :corrent-guesses 0
           :incorrect-guesses 0
-          :free-text false
-          :quiz-type "mixed"}})
+          :free-text true
+          :quiz-type "to-romaji"}})
