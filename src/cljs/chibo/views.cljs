@@ -2,16 +2,26 @@
   (:require [re-frame.core :refer [subscribe dispatch]]))
 
 (defn alphabet-choice []
-  (let [alphabets @(subscribe [:alphabets])]
+  (let [alphabets @(subscribe [:alphabets])
+        quiz-alphabet @(subscribe [:quiz-alphabet])]
     [:div.container
-      [:button {:type "button"
-                :value (first alphabets)
-                :on-click #(dispatch [:alphabet-picked (-> % .-target .-value)])}
-                (first alphabets)]
-      [:button {:type "button"
-                :value (second alphabets)
-                :on-click #(dispatch [:alphabet-picked (-> % .-target .-value)])}
-                (second alphabets)]]))
+        [:input {:id (first alphabets)
+                 :name "alphabet"
+                 :type "radio"
+                 :default-checked (= quiz-alphabet (first alphabets))
+                 :value (first alphabets)
+                 :on-click #(dispatch [:alphabet-picked (-> % .-target .-value)])}]
+        [:label {:for (first alphabets)} (first alphabets)]
+        [:input {:id (second alphabets)
+                 :name "alphabet"
+                 :type "radio"
+                 :default-checked (= quiz-alphabet (second alphabets))
+                 :value (second alphabets)
+                 :on-click #(dispatch [:alphabet-picked (-> % .-target .-value)])}]
+        [:label {:for (second alphabets)} (second alphabets)]
+        [:button {:type "button"
+                 :on-click #(dispatch [:panel-changed "quiz-options"])}
+                 ">>"]]))
 
 (defn quiz-options []
   (let [quiz-options @(subscribe [:quiz-options])]
@@ -52,7 +62,13 @@
                  :default-checked (= (:quiz-type quiz-options) "mixed")
                  :value false
                  :on-click #(dispatch [:quiz-options-filtered {:quiz-type "mixed"}])}]
-        [:label {:for "mixed"} "Mixed"]]]))
+        [:label {:for "mixed"} "Mixed"]]
+      [:button {:type "button"
+               :on-click #(dispatch [:panel-changed "alphabet-choice"])}
+               "<<"]
+      [:button {:type "button"
+               :on-click #(dispatch [:panel-changed "quiz"])}
+               ">>"]]))
 
 (defn main-panel []
   (let [panel (subscribe [:panel])]

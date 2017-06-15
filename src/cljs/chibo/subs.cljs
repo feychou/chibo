@@ -7,6 +7,11 @@
     (select-keys (:quiz db) [:quiz-type :free-text])))
 
 (reg-sub
+	:quiz-alphabet
+  (fn [db _]
+    (:alphabet (:quiz db))))
+
+(reg-sub
   :alphabets
   (fn [db _]
     (:alphabets db)))
