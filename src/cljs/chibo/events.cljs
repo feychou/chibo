@@ -1,5 +1,5 @@
 (ns chibo.events
-  (:require [re-frame.core :refer [reg-event-db]]
+  (:require [re-frame.core :refer [reg-event-db trim-v]]
             [chibo.db :as db]))
 
 (reg-event-db
@@ -9,5 +9,13 @@
 
 (reg-event-db
   :alphabet-picked
+  trim-v
   (fn [db [alphabet]]
-    (assoc db :alphabet alphabet :panel "options"))) 
+    (update-in (assoc db :panel "options") [:quiz] merge {:alphabet alphabet})))
+
+(reg-event-db
+  :quiz-options-updated
+  trim-v
+  (fn [db [options]]
+    (js/console.log options)
+    (update-in db [:quiz] merge options)))

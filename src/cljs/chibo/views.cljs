@@ -9,18 +9,19 @@
           "alphabet-choice" [:div.container
                               [:button {:type "button"
                                         :value (first @alphabets)
-                                        :on-click #(dispatch [:alphabet-picked (-> % .-value)])}
+                                        :on-click #(dispatch [:alphabet-picked (-> % .-target .-value)])}
                                         (first @alphabets)]
                               [:button {:type "button"
                                         :value (second @alphabets)
-                                        :on-click #(dispatch [:alphabet-picked (-> % .-value)])}
+                                        :on-click #(dispatch [:alphabet-picked (-> % .-target .-value)])}
                                         (second @alphabets)]]
           "options" [:div.container
                       [:form
                         [:input {:id "free-text-true"
                                  :name "free-text"
                                  :type "radio"
-                                 :value true}]
+                                 :value true
+                                 :on-click #(dispatch [:quiz-options-updated {:free-text true}])}]
                         [:label {:for "free-text-true"} "Free text"]
                         [:input {:id "free-text-false"
                                  :name "free-text"
