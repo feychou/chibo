@@ -14,7 +14,7 @@
     (update-in (assoc db :panel "options") [:quiz] merge {:alphabet alphabet})))
 
 (reg-event-db
-  :quiz-options-updated
+  :quiz-options-filtered
   trim-v
   (fn [db [options]]
     (js/console.log options)
