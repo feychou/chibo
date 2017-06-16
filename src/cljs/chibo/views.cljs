@@ -64,15 +64,16 @@
                  :on-click #(dispatch [:quiz-options-filtered {:quiz-type "mixed"}])}]
         [:label {:for "mixed"} "Mixed"]]
       [:button {:type "button"
-               :on-click #(dispatch [:panel-changed "alphabet-choice"])}
+               :on-click #(dispatch [:quiz-started])}
                "<<"]
       [:button {:type "button"
-               :on-click #(dispatch [:panel-changed "quiz"])}
+               :on-click #(dispatch [:quiz-started])}
                ">>"]]))
 
-(defn main-panel []
+(defn main-panel [] 
   (let [panel (subscribe [:panel])]
     (fn []
       (case @panel
           "alphabet-choice" [alphabet-choice]
-          "quiz-options" [quiz-options]))))
+          "quiz-options" [quiz-options]
+          "quiz" [:div]))))

@@ -1,6 +1,7 @@
 (ns chibo.events
   (:require [re-frame.core :refer [reg-event-db trim-v]]
-            [chibo.db :as db]))
+            [chibo.db :as db]
+            [chibo.syllables :refer [syllables]]))
 
 (reg-event-db
  :initialize-db
@@ -24,3 +25,9 @@
   trim-v
   (fn [db [value]]
     (assoc db :panel value)))
+
+(reg-event-db
+  :quiz-started
+  trim-v
+  (fn [db _]
+    (update-in (assoc db :panel "quiz") [:quiz] merge {:current-char (rand-nth syllables)})))

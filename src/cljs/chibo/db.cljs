@@ -16,6 +16,7 @@
   {:alphabets ["hiragana" "katakana"]
    :panel "alphabet-choice"
    :quiz {:alphabet "hiragana"
+          :current-char {}
           :corrent-guesses 0
           :incorrect-guesses 0
           :free-text true
