@@ -3,6 +3,10 @@
             [chibo.db :as db]
             [chibo.syllables :refer [syllables]]))
 
+(defn make-char [alphabet, random-char]
+  {:hint ((keyword (first alphabet)) random-char)
+   :solution ((keyword (first alphabet)) random-char)})
+
 (reg-event-db
  :initialize-db
  (fn  [_ _]
@@ -18,12 +22,12 @@
   :quiz-started
   trim-v
   (fn [db _]
-    (update-in (assoc db :panel "quiz") [:quiz] merge {:current-char (rand-nth syllables)})))
+    (let [random-char (rand-nth syllables)]
+      (update-in (assoc db :panel "quiz") [:quiz] merge {:current-char (make-char (:from (:quiz db)) random-char)}))))
 
 (reg-event-db
   :next-char
   trim-v
   (fn [db _]
-    (let [random-char (rand-nth syllables)
-          quiz-char {}]
-      (update-in db [:quiz] merge {:current-char (rand-nth syllables)}))))
+    (let [random-char (rand-nth syllables)]
+      (update-in db [:quiz] merge {:current-char (make-char (:from (:quiz db)) random-char)}))))

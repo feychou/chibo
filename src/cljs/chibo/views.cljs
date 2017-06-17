@@ -49,7 +49,7 @@
 (defn quiz []
   (let [current-char @(subscribe [:current-char])]
     [:div.container
-      [:div.char (:h current-char)]
+      [:div.char (:hint current-char)]
       [:input {:type "text"}]
       [:button {:type "button"
                :on-click #(dispatch [:next-char])}
