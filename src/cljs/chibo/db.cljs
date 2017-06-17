@@ -5,19 +5,19 @@
   (s/def ::corrent-guesses int?)
   (s/def ::incorrect-guesses int?)
   (s/def ::free-text bool?)
-  (s/def ::quiz-type #{"to-romaji" "from-romaji" "mixed"})
-  (s/def ::alphabet #{"hiragana" "katakana"})
-  (s/def ::panel #{"alphabet-choice" "quiz-options" "quiz"})
-  (s/def ::quiz (s/keys req-un [::corrent-guesses ::incorrect-guesses ::quiz-type ::alphabet]))
-  (s/def ::db (s/keys req-un [::quiz]))
-)
+  (s/def ::panel #{"quiz-options" "quiz"})
+  (s/def ::from #{"hiragana" "katakana" "romaji"})
+  (s/def ::to #{"hiragana" "katakana" "romaji"})
+  (s/def ::current-char (s/keys req-un [::hint ::solution]))
+  (s/def ::quiz (s/keys req-un [::corrent-guesses ::incorrect-guesses ::quiz-type ::free-text ::current-char]))
+  (s/def ::db (s/keys req-un [::quiz])))
 
 (def default-db
-  {:alphabets ["hiragana" "katakana"]
-   :panel "alphabet-choice"
-   :quiz {:alphabet "hiragana"
-          :current-char {}
+  {:alphabets ["hiragana" "katakana" "romaji"]
+   :panel "quiz-options"
+   :quiz {:current-char {}
           :corrent-guesses 0
           :incorrect-guesses 0
           :free-text true
-          :quiz-type "to-romaji"}})
+          :from "hiragana"
+          :to "romaji"}})

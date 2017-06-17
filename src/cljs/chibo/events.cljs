@@ -21,13 +21,15 @@
     (update-in db [:quiz] merge options)))
 
 (reg-event-db
-  :panel-changed
-  trim-v
-  (fn [db [value]]
-    (assoc db :panel value)))
-
-(reg-event-db
   :quiz-started
   trim-v
   (fn [db _]
     (update-in (assoc db :panel "quiz") [:quiz] merge {:current-char (rand-nth syllables)})))
+
+(reg-event-db
+  :next-char
+  trim-v
+  (fn [db _]
+    (let [random-char (rand-nth syllables)
+          quiz-char {}]
+      (update-in db [:quiz] merge {:current-char (rand-nth syllables)}))))

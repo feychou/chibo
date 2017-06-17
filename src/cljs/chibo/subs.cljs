@@ -4,12 +4,7 @@
 (reg-sub
   :quiz-options
   (fn [db _]
-    (select-keys (:quiz db) [:quiz-type :free-text])))
-
-(reg-sub
-	:quiz-alphabet
-  (fn [db _]
-    (:alphabet (:quiz db))))
+    (select-keys (:quiz db) [:from :to :free-text])))
 
 (reg-sub
   :alphabets
@@ -20,3 +15,8 @@
   :panel
   (fn [db _]
     (:panel db)))
+
+(reg-sub
+  :current-char
+  (fn [db _]
+    (:current-char (:quiz db))))
