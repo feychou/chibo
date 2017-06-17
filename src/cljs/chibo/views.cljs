@@ -1,8 +1,19 @@
 (ns chibo.views
   (:require [re-frame.core :refer [subscribe dispatch]]))
 
-(defn quiz-options []
+(defn alphabet-input [alphabet, input-name]
   (let [quiz-options @(subscribe [:quiz-options])]
+    [:span
+      [:input {:id (str input-name "-" alphabet)
+               :name input-name
+               :type "radio"
+               :default-checked false
+               :value true}]
+      [:label {:for (str input-name "-" alphabet)} alphabet]]))
+
+(defn quiz-options []
+  (let [quiz-options @(subscribe [:quiz-options])
+        alphabets @(subscribe [:alphabets])]
     [:div.container
       [:form
         [:div
@@ -21,12 +32,11 @@
                    :on-click #(dispatch [:quiz-options-filtered {:free-text false}])}]
           [:label {:for "free-text-false"} "Multiple choice"]]]
         [:div "From"
-          [:input {:id "from-hiragana"
-                   :name "from"
-                   :type "radio"
-                   :default-checked false
-                   :value "h"}]
-          [:label {:for "from-hiragana"} "From hiragana"]]
+          (for [alphabet alphabets]
+            ^{:key alphabet} [alphabet-input alphabet "from"])]
+        [:div "To"
+          (for [alphabet alphabets]
+            ^{:key alphabet} [alphabet-input alphabet "to"])]
         [:div
           [:button {:type "button"
                    :on-click #(dispatch [:quiz-started])}
