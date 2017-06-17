@@ -8,6 +8,7 @@
                :name input-name
                :type "radio"
                :default-checked (= ((keyword input-name) quiz-options) alphabet)
+               :on-click #(dispatch [:quiz-options-filtered {(keyword input-name) alphabet}])
                :value true}]
       [:label {:for (str input-name "-" alphabet)} alphabet]]))
 

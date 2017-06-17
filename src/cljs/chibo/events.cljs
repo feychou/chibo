@@ -9,12 +9,6 @@
    db/default-db))
 
 (reg-event-db
-  :alphabet-picked
-  trim-v
-  (fn [db [alphabet]]
-    (update-in db [:quiz] merge {:alphabet alphabet})))
-
-(reg-event-db
   :quiz-options-filtered
   trim-v
   (fn [db [options]]
