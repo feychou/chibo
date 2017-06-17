@@ -50,7 +50,8 @@
   (let [current-char @(subscribe [:current-char])]
     [:div.container
       [:div.char (:hint current-char)]
-      [:input {:type "text"}]
+      [:input {:type "text"
+               :on-key-press #(when (= 13 (.-which %)) (dispatch [:quiz-user-input (-> % .-target .-value)]))}]
       [:button {:type "button"
                :on-click #(dispatch [:next-char])}
                ">>"]]))
