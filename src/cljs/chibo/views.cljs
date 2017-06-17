@@ -7,7 +7,7 @@
       [:input {:id (str input-name "-" alphabet)
                :name input-name
                :type "radio"
-               :default-checked false
+               :default-checked (= ((keyword input-name) quiz-options) alphabet)
                :value true}]
       [:label {:for (str input-name "-" alphabet)} alphabet]]))
 
