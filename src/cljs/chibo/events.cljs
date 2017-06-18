@@ -22,25 +22,35 @@
   :quiz-started
   (fn [db _]
     (let [random-char (rand-nth syllables)]
-      (update-in (assoc db :panel "quiz") [:quiz] merge {:current-char (make-char (:quiz db) random-char)}))))
+      (update-in (assoc db :panel "quiz") [:quiz] 
+       merge {:current-char (make-char (:quiz db) random-char)}))))
 
 (reg-event-db
   :next-char
   (fn [db _]
     (let [random-char (rand-nth syllables)]
-      (update-in db [:quiz] merge {:current-char (make-char (:quiz db) random-char)}))))
+      (update-in db [:quiz]
+       merge {:current-char (make-char (:quiz db) random-char)}))))
 
 (reg-event-db
-  :quiz-user-input
+  :wrong-option-picked
   trim-v
-  (fn [db [value]]
+  (fn [db _]
     (let [random-char (rand-nth syllables)
           quiz (:quiz db)]
-      (js/console.log value)
-      (js/console.log (:solution (:current-char quiz)))
-      (if (= value (:solution (:current-char quiz)))
-          (update-in db [:quiz] merge {:current-char (make-char quiz random-char)
-                                       :correct-guesses (+ (:correct-guesses quiz) 1)
-                                       :total-guesses (+ (:total-guesses quiz) 1)})
-          (update-in db [:quiz] merge {:current-char (make-char quiz random-char)
-                                       :total-guesses (+ (:total-guesses quiz) 1)})))))
+      (js/console.log "wrong")
+      (update-in db [:quiz] 
+       merge {:current-char (make-char quiz random-char)
+              :total-guesses (+ (:total-guesses quiz) 1)}))))
+
+(reg-event-db
+  :right-option-picked
+  trim-v
+  (fn [db _]
+    (js/console.log "right")
+    (let [random-char (rand-nth syllables)
+          quiz (:quiz db)]
+      (update-in db [:quiz]
+       merge {:current-char (make-char quiz random-char)
+              :correct-guesses (+ (:correct-guesses quiz) 1)
+              :total-guesses (+ (:total-guesses quiz) 1)}))))

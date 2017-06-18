@@ -51,7 +51,10 @@
     [:div.container
       [:div.char (:hint current-char)]
       [:input {:type "text"
-               :on-key-press #(when (= 13 (.-which %)) (dispatch [:quiz-user-input (-> % .-target .-value)]))}]
+               :on-key-press #(when (= 13 (.-which %))
+                                (if (= (.-target.value %) (:solution current-char))
+                                  (dispatch [:right-option-picked])
+                                  (dispatch [:wrong-option-picked])))}]
       [:button {:type "button"
                :on-click #(dispatch [:next-char])}
                ">>"]]))
