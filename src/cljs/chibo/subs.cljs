@@ -20,3 +20,8 @@
   :current-char
   (fn [db _]
     (:current-char (:quiz db))))
+
+(reg-sub
+  :input-value
+  (fn [db _]
+    (:input-value (:quiz db))))

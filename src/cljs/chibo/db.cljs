@@ -5,6 +5,7 @@
   (s/def ::correct-guesses int?)
   (s/def ::total-guesses int?)
   (s/def ::free-text bool?)
+  (s/def ::input-value str?)
   (s/def ::panel #{"quiz-options" "quiz"})
   (s/def ::from #{"hiragana" "katakana" "romaji"})
   (s/def ::to #{"hiragana" "katakana" "romaji"})
@@ -17,6 +18,7 @@
    :panel "quiz-options"
    :quiz {:current-char {}
           :correct-guesses 0
+          :input-value ""
           :total-guesses 0
           :free-text true
           :from "hiragana"

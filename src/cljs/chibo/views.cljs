@@ -51,13 +51,13 @@
 
 (defn quiz []
   (let [current-char (subscribe [:current-char])
-        value (atom "")]
+        input-value (subscribe [:input-value])]
     (fn []
       [:div.container
         [:div.char (:hint @current-char)]
         [:input {:type "text"
-                 :value @value
-                 :on-change #(reset! value (-> % .-target .-value))
+                 :value @input-value
+                 :on-change #(dispatch [:input-value-updated (.-target.value %)])
                  :on-key-press #(when (= 13 (.-which %))
                                   (if (= (.-target.value %) (:solution @current-char))
                                     (dispatch [:right-option-picked])

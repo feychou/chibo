@@ -33,6 +33,12 @@
        merge {:current-char (make-char (:quiz db) random-char)}))))
 
 (reg-event-db
+  :input-value-updated
+  trim-v
+  (fn [db [new-value]]
+    (update-in db [:quiz] merge {:input-value new-value})))
+
+(reg-event-db
   :wrong-option-picked
   trim-v
   (fn [db _]
@@ -40,7 +46,8 @@
           quiz (:quiz db)]
       (js/console.log "wrong")
       (update-in db [:quiz] 
-       merge {:current-char (make-char quiz random-char)
+       merge {:input-value ""
+              :current-char (make-char quiz random-char)
               :total-guesses (+ (:total-guesses quiz) 1)}))))
 
 (reg-event-db
@@ -51,6 +58,7 @@
     (let [random-char (rand-nth syllables)
           quiz (:quiz db)]
       (update-in db [:quiz]
-       merge {:current-char (make-char quiz random-char)
+       merge {:input-value ""
+              :current-char (make-char quiz random-char)
               :correct-guesses (+ (:correct-guesses quiz) 1)
               :total-guesses (+ (:total-guesses quiz) 1)}))))
