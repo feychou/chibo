@@ -2,6 +2,10 @@
   (:require [re-frame.core :refer [subscribe dispatch]]
             [reagent.core :refer [atom]]))
 
+(def initial-focus-wrapper 
+  (with-meta identity
+    {:component-did-mount #(.focus (reagent/dom-node %))}))
+
 (defn alphabet-input [alphabet, input-name]
   (let [quiz-options (subscribe [:quiz-options])]
     (fn []
@@ -50,9 +54,11 @@
 
 (defn quiz []
   (let [current-char (subscribe [:current-char])
-        input-value (subscribe [:input-value])]
+        input-value (subscribe [:input-value])
+        counter (subscribe [:counter])]
     (fn []
       [:div.container
+        [:div.counter (str (:correct-guesses @counter) "/" (:total-guesses @counter))]
         [:div.char (:hint @current-char)]
         [:input {:type "text"
                  :value @input-value

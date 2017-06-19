@@ -25,3 +25,8 @@
   :input-value
   (fn [db _]
     (:input-value (:quiz db))))
+
+(reg-sub
+  :counter
+  (fn [db _]
+    (select-keys (:quiz db) [:correct-guesses :total-guesses])))
