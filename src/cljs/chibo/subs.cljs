@@ -22,9 +22,9 @@
     (:current-char (:quiz db))))
 
 (reg-sub
-  :input-value
+  :input
   (fn [db _]
-    (:input-value (:quiz db))))
+    (:input (:quiz db))))
 
 (reg-sub
   :counter

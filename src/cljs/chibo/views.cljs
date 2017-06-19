@@ -1,10 +1,10 @@
 (ns chibo.views
   (:require [re-frame.core :refer [subscribe dispatch]]
-            [reagent.core :refer [atom]]))
+            [reagent.core :refer [atom dom-node]]))
 
 (def initial-focus-wrapper 
   (with-meta identity
-    {:component-did-mount #(.focus (reagent/dom-node %))}))
+    {:component-did-mount #(.focus (dom-node %))}))
 
 (defn alphabet-input [alphabet, input-name]
   (let [quiz-options (subscribe [:quiz-options])]
@@ -54,19 +54,21 @@
 
 (defn quiz []
   (let [current-char (subscribe [:current-char])
-        input-value (subscribe [:input-value])
+        input (subscribe [:input])
         counter (subscribe [:counter])]
     (fn []
       [:div.container
         [:div.counter (str (:correct-guesses @counter) "/" (:total-guesses @counter))]
         [:div.char (:hint @current-char)]
-        [:input {:type "text"
-                 :value @input-value
-                 :on-change #(dispatch [:input-value-updated (.-target.value %)])
-                 :on-key-press #(when (= 13 (.-which %))
-                                  (if (= (.-target.value %) (:solution @current-char))
-                                    (dispatch [:right-option-picked])
-                                    (dispatch [:wrong-option-picked])))}]
+        [initial-focus-wrapper
+          [:input {:type "text"
+                   :value (:value @input)
+                   :disabled (:disabled @input)
+                   :on-change #(dispatch [:input-value-updated (.-target.value %)])
+                   :on-key-press #(when (= 13 (.-which %))
+                                    (if (= (.-target.value %) (:solution @current-char))
+                                      (dispatch [:right-option-picked])
+                                      (dispatch [:wrong-option-picked])))}]]
         [:button {:type "button"
                  :on-click #(dispatch [:next-char])}
                  ">>"]])))

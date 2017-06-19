@@ -36,7 +36,9 @@
   :input-value-updated
   trim-v
   (fn [db [new-value]]
-    (update-in db [:quiz] merge {:input-value new-value})))
+    (update-in db [:quiz]
+     merge {:input {:value new-value 
+                    :disabled false}})))
 
 (reg-event-db
   :wrong-option-picked
