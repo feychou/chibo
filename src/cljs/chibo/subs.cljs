@@ -30,3 +30,8 @@
   :counter
   (fn [db _]
     (select-keys (:quiz db) [:correct-guesses :total-guesses])))
+
+(reg-sub
+  :feedback
+  (fn [db _]
+    (:feedback (:quiz db))))

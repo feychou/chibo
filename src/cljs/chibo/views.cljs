@@ -55,7 +55,8 @@
 (defn quiz []
   (let [current-char (subscribe [:current-char])
         input (subscribe [:input])
-        counter (subscribe [:counter])]
+        counter (subscribe [:counter])
+        feedback (subscribe [:feedback])]
     (fn []
       [:div.container
         [:div.counter (str (:correct-guesses @counter) "/" (:total-guesses @counter))]
@@ -69,6 +70,7 @@
                                     (if (= (.-target.value %) (:solution @current-char))
                                       (dispatch [:right-option-picked])
                                       (dispatch [:wrong-option-picked])))}]]
+        [:div.feedback (when (not= @feedback "off") "hello")]
         [:button {:type "button"
                  :on-click #(dispatch [:next-char])}
                  ">>"]])))

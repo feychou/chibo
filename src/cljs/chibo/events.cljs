@@ -48,7 +48,8 @@
           quiz (:quiz db)]
       (js/console.log "wrong")
       (update-in db [:quiz] 
-       merge {:input-value ""
+       merge {:input {:value "" :disabled false}
+              :feedback "wrong"
               :current-char (make-char quiz random-char)
               :total-guesses (+ (:total-guesses quiz) 1)}))))
 
@@ -60,7 +61,8 @@
     (let [random-char (rand-nth syllables)
           quiz (:quiz db)]
       (update-in db [:quiz]
-       merge {:input-value ""
+       merge {:input {:value "" :disabled false}
+              :feedback "right"
               :current-char (make-char quiz random-char)
               :correct-guesses (+ (:correct-guesses quiz) 1)
               :total-guesses (+ (:total-guesses quiz) 1)}))))
