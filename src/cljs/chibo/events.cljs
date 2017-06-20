@@ -39,8 +39,15 @@
   :input-value-updated
   quiz-interceptors
   (fn [quiz [new-value]]
-    (merge quiz {:input {:value new-value
-                         :disabled false}})))
+    (assoc quiz :input {:value new-value
+                        :disabled false})))
+
+(reg-event-db
+  :feedback-reset
+  quiz-interceptors
+  (fn [quiz]
+    (merge quiz {:feedback "off"
+                 :input {:value "" :disable false}})))
 
 (reg-event-fx
   :wrong-option-picked
@@ -48,10 +55,11 @@
     (let [random-char (rand-nth syllables)
           quiz (:quiz db)]
       {:db (update-in db [:quiz]
-            merge {:input {:value "" :disabled false}
+            merge {:input {:value "" :disabled true}
                    :feedback "wrong"
                    :current-char (make-char quiz random-char)
-                   :total-guesses (+ (:total-guesses quiz) 1)})})))
+                   :total-guesses (+ (:total-guesses quiz) 1)})
+       :dispatch-later [{:ms 1000 :dispatch [:feedback-reset]}]})))
 
 (reg-event-fx
   :right-option-picked
@@ -59,8 +67,9 @@
     (let [random-char (rand-nth syllables)
           quiz (:quiz db)]
       {:db (update-in db [:quiz]
-            merge {:input {:value "" :disabled false}
+            merge {:input {:value "" :disabled true}
                    :feedback "right"
                    :current-char (make-char quiz random-char)
                    :correct-guesses (+ (:correct-guesses quiz) 1)
-                   :total-guesses (+ (:total-guesses quiz) 1)})})))
+                   :total-guesses (+ (:total-guesses quiz) 1)})
+       :dispatch-later [{:ms 800 :dispatch [:feedback-reset]}]})))

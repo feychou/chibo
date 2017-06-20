@@ -2,10 +2,6 @@
   (:require [re-frame.core :refer [subscribe dispatch]]
             [reagent.core :refer [atom dom-node]]))
 
-(def initial-focus-wrapper 
-  (with-meta identity
-    {:component-did-mount #(.focus (dom-node %))}))
-
 (defn alphabet-input [alphabet, input-name]
   (let [quiz-options (subscribe [:quiz-options])]
     (fn []
@@ -52,25 +48,29 @@
                                   (dispatch [:quiz-started]))}
                      ">>"]]])))
 
+(defn solution-input []
+  (let [current-char (subscribe [:current-char])
+        input (subscribe [:input])]
+    (fn []
+      [:input {:type "text"
+               :value (:value @input)
+               :disabled (:disabled @input)
+               :on-change #(dispatch [:input-value-updated (.-target.value %)])
+               :on-key-press #(when (= 13 (.-which %))
+                                (if (= (.-target.value %) (:solution @current-char))
+                                  (dispatch [:right-option-picked])
+                                  (dispatch [:wrong-option-picked])))}])))
+
 (defn quiz []
   (let [current-char (subscribe [:current-char])
-        input (subscribe [:input])
         counter (subscribe [:counter])
         feedback (subscribe [:feedback])]
     (fn []
       [:div.container
         [:div.counter (str (:correct-guesses @counter) "/" (:total-guesses @counter))]
         [:div.char (:hint @current-char)]
-        [initial-focus-wrapper
-          [:input {:type "text"
-                   :value (:value @input)
-                   :disabled (:disabled @input)
-                   :on-change #(dispatch [:input-value-updated (.-target.value %)])
-                   :on-key-press #(when (= 13 (.-which %))
-                                    (if (= (.-target.value %) (:solution @current-char))
-                                      (dispatch [:right-option-picked])
-                                      (dispatch [:wrong-option-picked])))}]]
-        [:div.feedback (when (not= @feedback "off") "hello")]
+        [solution-input]
+        [:div.feedback (when (not= @feedback "off") @feedback)]
         [:button {:type "button"
                  :on-click #(dispatch [:next-char])}
                  ">>"]])))
