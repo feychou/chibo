@@ -1,5 +1,5 @@
 (ns chibo.events
-  (:require [re-frame.core :refer [reg-event-db trim-v path]]
+  (:require [re-frame.core :refer [reg-event-db reg-event-fx trim-v path]]
             [chibo.db :as db]
             [chibo.syllables :refer [syllables]]))
 
@@ -32,7 +32,8 @@
   quiz-interceptors
   (fn [quiz _]
     (let [random-char (rand-nth syllables)]
-      (merge quiz {:current-char (make-char quiz random-char)}))))
+      (merge quiz {:total-guesses (+ (:total-guesses quiz) 1)
+                   :current-char (make-char quiz random-char)}))))
 
 (reg-event-db
   :input-value-updated
@@ -41,25 +42,25 @@
     (merge quiz {:input {:value new-value
                          :disabled false}})))
 
-(reg-event-db
+(reg-event-fx
   :wrong-option-picked
-  quiz-interceptors
-  (fn [quiz _]
-    (let [random-char (rand-nth syllables)]
-      (js/console.log "wrong")
-      (merge quiz {:input {:value "" :disabled false}
+  (fn [{:keys [db]} _]
+    (let [random-char (rand-nth syllables)
+          quiz (:quiz db)]
+      {:db (update-in db [:quiz]
+            merge {:input {:value "" :disabled false}
                    :feedback "wrong"
                    :current-char (make-char quiz random-char)
-                   :total-guesses (+ (:total-guesses quiz) 1)}))))
+                   :total-guesses (+ (:total-guesses quiz) 1)})})))
 
-(reg-event-db
+(reg-event-fx
   :right-option-picked
-  quiz-interceptors
-  (fn [quiz _]
-    (js/console.log "right")
-    (let [random-char (rand-nth syllables)]
-      (merge quiz {:input {:value "" :disabled false}
+  (fn [{:keys [db]} _]
+    (let [random-char (rand-nth syllables)
+          quiz (:quiz db)]
+      {:db (update-in db [:quiz]
+            merge {:input {:value "" :disabled false}
                    :feedback "right"
                    :current-char (make-char quiz random-char)
                    :correct-guesses (+ (:correct-guesses quiz) 1)
-                   :total-guesses (+ (:total-guesses quiz) 1)}))))
+                   :total-guesses (+ (:total-guesses quiz) 1)})})))
