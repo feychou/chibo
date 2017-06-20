@@ -1,7 +1,9 @@
 (ns chibo.events
-  (:require [re-frame.core :refer [reg-event-db trim-v]]
+  (:require [re-frame.core :refer [reg-event-db trim-v path]]
             [chibo.db :as db]
             [chibo.syllables :refer [syllables]]))
+
+(def quiz-interceptors [(path :quiz) trim-v])
 
 (defn make-char [quiz, random-char]
   {:hint ((keyword (first (:from quiz))) random-char)
@@ -14,9 +16,9 @@
 
 (reg-event-db
   :quiz-options-filtered
-  trim-v
-  (fn [db [options]]
-    (update-in db [:quiz] merge options)))
+  quiz-interceptors
+  (fn [quiz [options]]
+    (merge quiz options)))
 
 (reg-event-db
   :quiz-started
@@ -27,42 +29,37 @@
 
 (reg-event-db
   :next-char
-  (fn [db _]
+  quiz-interceptors
+  (fn [quiz _]
     (let [random-char (rand-nth syllables)]
-      (update-in db [:quiz]
-       merge {:current-char (make-char (:quiz db) random-char)}))))
+      (merge quiz {:current-char (make-char quiz random-char)}))))
 
 (reg-event-db
   :input-value-updated
-  trim-v
-  (fn [db [new-value]]
-    (update-in db [:quiz]
-     merge {:input {:value new-value 
-                    :disabled false}})))
+  quiz-interceptors
+  (fn [quiz [new-value]]
+    (merge quiz {:input {:value new-value
+                         :disabled false}})))
 
 (reg-event-db
   :wrong-option-picked
-  trim-v
-  (fn [db _]
-    (let [random-char (rand-nth syllables)
-          quiz (:quiz db)]
+  quiz-interceptors
+  (fn [quiz _]
+    (let [random-char (rand-nth syllables)]
       (js/console.log "wrong")
-      (update-in db [:quiz] 
-       merge {:input {:value "" :disabled false}
-              :feedback "wrong"
-              :current-char (make-char quiz random-char)
-              :total-guesses (+ (:total-guesses quiz) 1)}))))
+      (merge quiz {:input {:value "" :disabled false}
+                   :feedback "wrong"
+                   :current-char (make-char quiz random-char)
+                   :total-guesses (+ (:total-guesses quiz) 1)}))))
 
 (reg-event-db
   :right-option-picked
-  trim-v
-  (fn [db _]
+  quiz-interceptors
+  (fn [quiz _]
     (js/console.log "right")
-    (let [random-char (rand-nth syllables)
-          quiz (:quiz db)]
-      (update-in db [:quiz]
-       merge {:input {:value "" :disabled false}
-              :feedback "right"
-              :current-char (make-char quiz random-char)
-              :correct-guesses (+ (:correct-guesses quiz) 1)
-              :total-guesses (+ (:total-guesses quiz) 1)}))))
+    (let [random-char (rand-nth syllables)]
+      (merge quiz {:input {:value "" :disabled false}
+                   :feedback "right"
+                   :current-char (make-char quiz random-char)
+                   :correct-guesses (+ (:correct-guesses quiz) 1)
+                   :total-guesses (+ (:total-guesses quiz) 1)}))))
