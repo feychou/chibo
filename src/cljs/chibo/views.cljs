@@ -48,18 +48,24 @@
                                   (dispatch [:quiz-started]))}
                      ">>"]]])))
 
+(def initial-focus-wrapper 
+  (with-meta identity
+    {:component-did-update #(.focus (dom-node %))
+     :component-did-mount #(.focus (dom-node %))}))
+
 (defn solution-input []
   (let [current-char (subscribe [:current-char])
         input (subscribe [:input])]
-    (fn []
-      [:input {:type "text"
-               :value (:value @input)
-               :disabled (:disabled @input)
-               :on-change #(dispatch [:input-value-updated (.-target.value %)])
-               :on-key-press #(when (= 13 (.-which %))
-                                (if (= (.-target.value %) (:solution @current-char))
-                                  (dispatch [:right-option-picked])
-                                  (dispatch [:wrong-option-picked])))}])))
+    [initial-focus-wrapper
+      (fn []
+        [:input {:type "text"
+                 :value (:value @input)
+                 :disabled (:disabled @input)
+                 :on-change #(dispatch [:input-value-updated (.-target.value %)])
+                 :on-key-press #(when (= 13 (.-which %))
+                                  (if (= (.-target.value %) (:solution @current-char))
+                                    (dispatch [:right-option-picked])
+                                    (dispatch [:wrong-option-picked])))}])]))
 
 (defn quiz []
   (let [current-char (subscribe [:current-char])
