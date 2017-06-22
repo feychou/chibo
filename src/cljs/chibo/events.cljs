@@ -59,7 +59,7 @@
                    :feedback "wrong"
                    :current-char (make-char quiz random-char)
                    :total-guesses (+ (:total-guesses quiz) 1)})
-       :dispatch-later [{:ms 1000 :dispatch [:feedback-reset]}]})))
+       :dispatch-later [{:ms 800 :dispatch [:feedback-reset]}]})))
 
 (reg-event-fx
   :right-option-picked

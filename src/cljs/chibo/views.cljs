@@ -50,8 +50,7 @@
 
 (def initial-focus-wrapper 
   (with-meta identity
-    {:component-did-update #(.focus (dom-node %))
-     :component-did-mount #(.focus (dom-node %))}))
+    {:component-did-update #(.focus (dom-node %))}))
 
 (defn solution-input []
   (let [current-char (subscribe [:current-char])
@@ -59,6 +58,7 @@
     [initial-focus-wrapper
       (fn []
         [:input {:type "text"
+                 :auto-focus true
                  :value (:value @input)
                  :disabled (:disabled @input)
                  :on-change #(dispatch [:input-value-updated (.-target.value %)])
