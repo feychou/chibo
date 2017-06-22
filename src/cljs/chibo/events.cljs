@@ -10,9 +10,9 @@
    :solution ((keyword (first (:to quiz))) random-char)})
 
 (reg-event-db
- :initialize-db
- (fn  [_ _]
-   db/default-db))
+  :initialize-db
+  (fn  [_ _]
+    db/default-db))
 
 (reg-event-db
   :quiz-options-filtered
@@ -48,6 +48,11 @@
   (fn [quiz]
     (merge quiz {:feedback "off"
                  :input {:value "" :disable false}})))
+
+(reg-event-db
+  :panel-changed
+  (fn [db _]
+    (assoc db :panel "result")))
 
 (reg-event-fx
   :wrong-option-picked

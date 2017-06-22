@@ -18,7 +18,8 @@
   (let [quiz-options (subscribe [:quiz-options])
         alphabets (subscribe [:alphabets])]
     (fn []
-      [:div.container
+      [:div.panel-container
+        [:h2 "Home"]
         [:form
           [:div
             [:input {:id "free-text-true"
@@ -48,14 +49,14 @@
                                   (dispatch [:quiz-started]))}
                      ">>"]]])))
 
-(def initial-focus-wrapper 
+(def focus-wrapper 
   (with-meta identity
     {:component-did-update #(.focus (dom-node %))}))
 
 (defn solution-input []
   (let [current-char (subscribe [:current-char])
         input (subscribe [:input])]
-    [initial-focus-wrapper
+    [focus-wrapper
       (fn []
         [:input {:type "text"
                  :auto-focus true
@@ -72,18 +73,35 @@
         counter (subscribe [:counter])
         feedback (subscribe [:feedback])]
     (fn []
-      [:div.container
+      [:div.panel-container
+        [:h2 "Quiz"]
         [:div.counter (str (:correct-guesses @counter) "/" (:total-guesses @counter))]
         [:div.char (:hint @current-char)]
         [solution-input]
         [:div.feedback (when (not= @feedback "off") @feedback)]
         [:button {:type "button"
                  :on-click #(dispatch [:next-char])}
-                 ">>"]])))
+                 ">>"]
+        [:button {:type "button"
+                 :on-click #(dispatch [:panel-changed "result"])}
+                 "Finish"]])))
+
+(defn result []
+  (let [counter (subscribe [:counter])]
+  (fn []
+    [:div.panel-container
+      [:h2 "Result"]
+      [:div (str "Congrats! You got " (:correct-guesses @counter) " out of " (:total-guesses @counter) " right.")]
+      [:button {:type "button"
+               :on-click #(dispatch [:initialize-db])}
+               "Start over"]])))
 
 (defn main-panel [] 
   (let [panel (subscribe [:panel])]
     (fn []
-      (case @panel
-          "quiz-options" [quiz-options]
-          "quiz" [quiz]))))
+      [:div.app-container
+        [:h1 "chibo"]
+        [#(case @panel
+            "quiz-options" [quiz-options]
+            "quiz" [quiz]
+            "result" [result])]])))

@@ -5,7 +5,7 @@
   (s/def ::correct-guesses int?)
   (s/def ::total-guesses int?)
   (s/def ::free-text bool?)
-  (s/def ::panel #{"quiz-options" "quiz"})
+  (s/def ::panel #{"quiz-options" "quiz" "result"})
   (s/def ::from #{"hiragana" "katakana" "romaji"})
   (s/def ::to #{"hiragana" "katakana" "romaji"})
   (s/def ::input (s/keys req-un [::value ::disabled]))
