@@ -1,6 +1,7 @@
 (ns chibo.views
   (:require [re-frame.core :refer [subscribe dispatch]]
-            [reagent.core :refer [atom dom-node]]))
+            [reagent.core :refer [atom dom-node]]
+            [clojure.string :refer [replace capitalize]]))
 
 (defn alphabet-input [alphabet, input-name]
   (let [quiz-options (subscribe [:quiz-options])]
@@ -14,28 +15,28 @@
                  :value true}]
         [:label {:for (str input-name "-" alphabet)} alphabet]])))
 
+(defn quiz-type-input [type]
+  (let [quiz-options (subscribe [:quiz-options])]
+    (fn []
+      [:span
+        [:input {:id type
+                 :name "quiz-type"
+                 :type "radio"
+                 :default-checked (= (:quiz-type @quiz-options) type)
+                 :on-click #(dispatch [:quiz-options-filtered {:quiz-type type}])}]
+        [:label {:for type} (capitalize (replace type #"-" " "))]])))
+
 (defn quiz-options []
   (let [quiz-options (subscribe [:quiz-options])
-        alphabets (subscribe [:alphabets])]
+        alphabets (subscribe [:alphabets])
+        quiz-types (subscribe [:quiz-types])]
     (fn []
       [:div.panel-container
         [:h2 "Home"]
         [:form
           [:div
-            [:input {:id "free-text-true"
-                     :name "free-text"
-                     :type "radio"
-                     :default-checked (:free-text @quiz-options)
-                     :value true
-                     :on-click #(dispatch [:quiz-options-filtered {:free-text true}])}]
-            [:label {:for "free-text-true"} "Free text"]
-            [:input {:id "free-text-false"
-                     :name "free-text"
-                     :type "radio"
-                     :default-checked (not (:free-text @quiz-options))
-                     :value false
-                     :on-click #(dispatch [:quiz-options-filtered {:free-text false}])}]
-            [:label {:for "free-text-false"} "Multiple choice"]]]
+            (for [quiz-type @quiz-types]
+              ^{:key quiz-type} [quiz-type-input quiz-type])]
           [:div "From"
             (for [alphabet @alphabets]
               ^{:key alphabet} [alphabet-input alphabet "from"])]
@@ -47,7 +48,7 @@
                      :on-click #(if (= (:from @quiz-options) (:to @quiz-options))
                                   (js/alert "Invalid selection")
                                   (dispatch [:quiz-started]))}
-                     ">>"]]])))
+                     ">>"]]]])))
 
 (def focus-wrapper 
   (with-meta identity
@@ -80,20 +81,26 @@
   (let [current-char (subscribe [:current-char])
         input (subscribe [:input])
         counter (subscribe [:counter])
-        feedback (subscribe [:feedback])]
+        feedback (subscribe [:feedback])
+        quiz-type (subscribe [:quiz-type])]
     (fn []
       [:div.panel-container
         [:h2 "Quiz"]
         [:div.counter (str (:correct-guesses @counter) "/" (:total-guesses @counter))]
         [:div.char (:hint @current-char)]
-        [solution-input]
-        [:span.feedback (when (not= @feedback "off") @feedback)]
-        [:button {:type "button"
-                 :on-click #(on-submit (:value @input) (:solution @current-char))}
-                 "Submit"]
-        [:button {:type "button"
-                 :on-click #(on-skip)}
-                 "Skip"]
+        (if (= @quiz-type "free-text")
+          (do
+            [:span
+              [solution-input]
+              [:span.feedback (when (not= @feedback "off") @feedback)]
+              [:button {:type "button"
+                       :on-click #(on-submit (:value @input) (:solution @current-char))}
+                       "Submit"]
+              [:button {:type "button"
+                       :on-click #(on-skip)}
+                       "Skip"]])
+          (do
+            [:h3 "Multiple choice!"]))
         [:button {:type "button"
                  :on-click #(dispatch [:panel-changed "result"])}
                  "Finish"]])))
