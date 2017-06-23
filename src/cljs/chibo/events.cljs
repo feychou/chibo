@@ -35,19 +35,19 @@
                         :disabled false})))
 
 (reg-event-db
-  :feedback-reset
-  quiz-interceptors
-  (fn [quiz]
-    (merge quiz {:feedback "off"
-                 :input {:value "" :disable false}})))
-
-(reg-event-db
   :panel-changed
   (fn [db _]
     (assoc db :panel "result")))
 
 (reg-event-db
-  :skip-char
+  :new-char
+  quiz-interceptors
+  (fn [quiz]
+    (let [random-char (rand-nth syllables)]
+      (assoc quiz :current-char (make-char quiz random-char)))))
+
+(reg-event-db
+  :char-skipped
   quiz-interceptors
   (fn [quiz _]
     (let [random-char (rand-nth syllables)]
@@ -55,26 +55,33 @@
                    :current-char (make-char quiz random-char)}))))
 
 (reg-event-fx
+  :feedback-clear
+  (fn [{:keys [db]} _]
+    {:db (update-in db [:quiz]
+          merge {:feedback "off"
+                 :input {:value ""
+                         :disable false}})
+     :dispatch [:new-char]}))
+
+(reg-event-fx
   :wrong-option-picked
   (fn [{:keys [db]} _]
-    (let [random-char (rand-nth syllables)
-          quiz (:quiz db)]
+    (let [quiz (:quiz db)]
       {:db (update-in db [:quiz]
-            merge {:input {:value "" :disabled true}
-                   :feedback "wrong"
-                   :current-char (make-char quiz random-char)
+            merge {:feedback "wrong"
+                   :input {:value ""
+                           :disabled true}
                    :total-guesses (+ (:total-guesses quiz) 1)})
-       :dispatch-later [{:ms 800 :dispatch [:feedback-reset]}]})))
+       :dispatch-later [{:ms 800 :dispatch [:feedback-clear]}]})))
 
 (reg-event-fx
   :right-option-picked
   (fn [{:keys [db]} _]
-    (let [random-char (rand-nth syllables)
-          quiz (:quiz db)]
+    (let [quiz (:quiz db)]
       {:db (update-in db [:quiz]
-            merge {:input {:value "" :disabled true}
-                   :feedback "right"
-                   :current-char (make-char quiz random-char)
+            merge {:feedback "right"
+                   :input {:value ""
+                           :disabled true}
                    :correct-guesses (+ (:correct-guesses quiz) 1)
                    :total-guesses (+ (:total-guesses quiz) 1)})
-       :dispatch-later [{:ms 800 :dispatch [:feedback-reset]}]})))
+       :dispatch-later [{:ms 800 :dispatch [:feedback-clear]}]})))

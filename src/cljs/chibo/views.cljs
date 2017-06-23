@@ -55,7 +55,7 @@
 
 (defn on-skip []
   (.focus (.getElementById js/document "solution-input"))
-  (dispatch [:skip-char]))
+  (dispatch [:char-skipped]))
 
 (defn solution-input []
   (let [current-char (subscribe [:current-char])
