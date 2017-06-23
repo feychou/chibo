@@ -53,12 +53,17 @@
   (with-meta identity
     {:component-did-update #(.focus (dom-node %))}))
 
+(defn on-skip []
+  (.focus (.getElementById js/document "solution-input"))
+  (dispatch [:skip-char]))
+
 (defn solution-input []
   (let [current-char (subscribe [:current-char])
         input (subscribe [:input])]
     [focus-wrapper
       (fn []
         [:input {:type "text"
+                 :id "solution-input"
                  :auto-focus true
                  :value (:value @input)
                  :disabled (:disabled @input)
@@ -80,7 +85,7 @@
         [solution-input]
         [:div.feedback (when (not= @feedback "off") @feedback)]
         [:button {:type "button"
-                 :on-click #(dispatch [:next-char])}
+                 :on-click #(on-skip)}
                  ">>"]
         [:button {:type "button"
                  :on-click #(dispatch [:panel-changed "result"])}

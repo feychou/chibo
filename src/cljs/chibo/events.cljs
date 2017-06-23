@@ -28,14 +28,6 @@
        merge {:current-char (make-char (:quiz db) random-char)}))))
 
 (reg-event-db
-  :next-char
-  quiz-interceptors
-  (fn [quiz _]
-    (let [random-char (rand-nth syllables)]
-      (merge quiz {:total-guesses (+ (:total-guesses quiz) 1)
-                   :current-char (make-char quiz random-char)}))))
-
-(reg-event-db
   :input-value-updated
   quiz-interceptors
   (fn [quiz [new-value]]
@@ -53,6 +45,14 @@
   :panel-changed
   (fn [db _]
     (assoc db :panel "result")))
+
+(reg-event-db
+  :skip-char
+  quiz-interceptors
+  (fn [quiz _]
+    (let [random-char (rand-nth syllables)]
+      (merge quiz {:total-guesses (+ (:total-guesses quiz) 1)
+                   :current-char (make-char quiz random-char)}))))
 
 (reg-event-fx
   :wrong-option-picked
