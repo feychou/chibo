@@ -57,6 +57,11 @@
   (.focus (.getElementById js/document "solution-input"))
   (dispatch [:char-skipped]))
 
+(defn on-submit [input-value solution]
+  (if (= input-value solution)
+    ((dispatch [:right-option-picked]))
+    (dispatch [:wrong-option-picked])))
+
 (defn solution-input []
   (let [current-char (subscribe [:current-char])
         input (subscribe [:input])]
@@ -69,12 +74,11 @@
                  :disabled (:disabled @input)
                  :on-change #(dispatch [:input-value-updated (.-target.value %)])
                  :on-key-press #(when (= 13 (.-which %))
-                                  (if (= (.-target.value %) (:solution @current-char))
-                                    (dispatch [:right-option-picked])
-                                    (dispatch [:wrong-option-picked])))}])]))
+                                  (on-submit (:value @input) (:solution @current-char)))}])]))
 
 (defn quiz []
   (let [current-char (subscribe [:current-char])
+        input (subscribe [:input])
         counter (subscribe [:counter])
         feedback (subscribe [:feedback])]
     (fn []
@@ -83,10 +87,13 @@
         [:div.counter (str (:correct-guesses @counter) "/" (:total-guesses @counter))]
         [:div.char (:hint @current-char)]
         [solution-input]
-        [:div.feedback (when (not= @feedback "off") @feedback)]
+        [:span.feedback (when (not= @feedback "off") @feedback)]
+        [:button {:type "button"
+                 :on-click #(on-submit (:value @input) (:solution @current-char))}
+                 "Submit"]
         [:button {:type "button"
                  :on-click #(on-skip)}
-                 ">>"]
+                 "Skip"]
         [:button {:type "button"
                  :on-click #(dispatch [:panel-changed "result"])}
                  "Finish"]])))
@@ -96,7 +103,10 @@
   (fn []
     [:div.panel-container
       [:h2 "Result"]
-      [:div (str "Congrats! You got " (:correct-guesses @counter) " out of " (:total-guesses @counter) " right.")]
+      [:div (str "Congrats! You got "
+                 (:correct-guesses @counter)
+                 " out of "
+                 (:total-guesses @counter) " right.")]
       [:button {:type "button"
                :on-click #(dispatch [:initialize-db])}
                "Start over"]])))
