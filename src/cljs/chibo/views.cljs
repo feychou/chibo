@@ -112,14 +112,15 @@
   (let [counter (subscribe [:counter])]
   (fn []
     [:div.result-container
-      [:div "Congrats! You got "
+      [:div "Congrats!"
+            [:br]
+            "You got "
             [:b (:correct-guesses @counter)]
-            " out of "
-            [:b (:total-guesses @counter)]
-            " right."]
-      [:button {:type "button"
-               :on-click #(dispatch [:initialize-db])}
-               "Start over"]])))
+            " right out of "
+            [:b (:total-guesses @counter)]]
+      [:button.control {:type "button"
+                        :on-click #(dispatch [:initialize-db])}
+                       "Start over"]])))
 
 (defn main-panel [] 
   (let [panel (subscribe [:panel])]

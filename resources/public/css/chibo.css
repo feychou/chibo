@@ -137,3 +137,8 @@ input[type=text]:focus {
   display: block;
   margin: auto;
 }
+
+.result-container {
+  display: inline-block;
+  margin-top: 30px;
+}
