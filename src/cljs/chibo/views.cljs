@@ -32,15 +32,14 @@
         quiz-types (subscribe [:quiz-types])]
     (fn []
       [:div.panel-container
-        [:h2 "Home"]
         [:form
           [:div
             (for [quiz-type @quiz-types]
               ^{:key quiz-type} [quiz-type-input quiz-type])]
-          [:div "From"
+          [:div [:b "From"]
             (for [alphabet @alphabets]
               ^{:key alphabet} [alphabet-input alphabet "from"])]
-          [:div "To"
+          [:div [:b "To"]
             (for [alphabet @alphabets]
               ^{:key alphabet} [alphabet-input alphabet "to"])]
           [:div
@@ -48,7 +47,7 @@
                      :on-click #(if (= (:from @quiz-options) (:to @quiz-options))
                                   (js/alert "Invalid selection")
                                   (dispatch [:quiz-started]))}
-                     ">>"]]]])))
+                     "Go!"]]]])))
 
 (def focus-wrapper 
   (with-meta identity
@@ -85,7 +84,6 @@
         quiz-type (subscribe [:quiz-type])]
     (fn []
       [:div.panel-container
-        [:h2 "Quiz"]
         [:div.counter (str (:correct-guesses @counter) "/" (:total-guesses @counter))]
         [:div.char (:hint @current-char)]
         (if (= @quiz-type "free-text")
@@ -109,11 +107,11 @@
   (let [counter (subscribe [:counter])]
   (fn []
     [:div.panel-container
-      [:h2 "Result"]
-      [:div (str "Congrats! You got "
-                 (:correct-guesses @counter)
-                 " out of "
-                 (:total-guesses @counter) " right.")]
+      [:div "Congrats! You got "
+            [:b (:correct-guesses @counter)]
+            " out of "
+            [:b (:total-guesses @counter)]
+            " right."]
       [:button {:type "button"
                :on-click #(dispatch [:initialize-db])}
                "Start over"]])))

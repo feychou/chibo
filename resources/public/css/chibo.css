@@ -1,0 +1,35 @@
+body {
+  font-family: 'Indie Flower', cursive;
+  background-color: #f3ccdd;
+  font-size: 30px;
+  color: #444444;
+}
+
+h1, h2, h3 {
+  margin: 0;
+  padding: 0;
+}
+
+.app-container {
+  max-width: 700px;
+  margin: auto;
+  text-align: center;
+}
+
+button,
+button:active,
+button:focus {
+  font-size: 30px;
+  cursor: pointer;
+  font-family: 'Indie Flower', cursive;
+  background-color: #ffff99;
+  border: none;
+  border-radius: 8px;
+  padding: 2px 8px;
+  outline: 0;
+}
+
+button:hover {
+  transition: 0.3s background-color;
+  background-color: #98fbc9;
+}
