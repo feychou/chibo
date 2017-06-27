@@ -4,16 +4,17 @@
             [clojure.string :refer [replace capitalize]]))
 
 (defn alphabet-input [alphabet, input-name]
-  (let [quiz-options (subscribe [:quiz-options])]
+  (let [quiz-options (subscribe [:quiz-options])
+        id (str input-name "-" alphabet)]
     (fn []
       [:span.input-wrapper
-        [:input {:id (str input-name "-" alphabet)
+        [:input {:id id
                  :name input-name
                  :type "radio"
                  :default-checked (= ((keyword input-name) @quiz-options) alphabet)
                  :on-click #(dispatch [:quiz-options-filtered {(keyword input-name) alphabet}])
                  :value true}]
-        [:label {:for (str input-name "-" alphabet)}
+        [:label {:for id}
           [:span (capitalize alphabet)]]])))
 
 (defn quiz-type-input [type]
@@ -35,21 +36,23 @@
     (fn []
       [:div.panel-container
         [:form
-          [:div
-            (for [quiz-type @quiz-types]
-              ^{:key quiz-type} [quiz-type-input quiz-type])]
-          [:div [:b.group-label "from"]
-            (for [alphabet @alphabets]
-              ^{:key alphabet} [alphabet-input alphabet "from"])]
-          [:div [:b.group-label "to"]
-            (for [alphabet @alphabets]
-              ^{:key alphabet} [alphabet-input alphabet "to"])]
-          [:div
-            [:button.go-button {:type "button"
-                                :on-click #(if (= (:from @quiz-options) (:to @quiz-options))
-                                              (js/alert "Invalid selection")
-                                              (dispatch [:quiz-started]))}
-              "Go!"]]]])))
+          [:h1 "chibo"]
+          [:div.options-container
+            [:div
+              (for [quiz-type @quiz-types]
+                ^{:key quiz-type} [quiz-type-input quiz-type])]
+            [:div [:b.group-label "from"]
+              (for [alphabet @alphabets]
+                ^{:key alphabet} [alphabet-input alphabet "from"])]
+            [:div [:b.group-label "to"]
+              (for [alphabet @alphabets]
+                ^{:key alphabet} [alphabet-input alphabet "to"])]
+            [:div
+              [:button.go-button {:type "button"
+                                  :on-click #(if (= (:from @quiz-options) (:to @quiz-options))
+                                                (js/alert "Invalid selection")
+                                                (dispatch [:quiz-started]))}
+                "Go!"]]]]])))
 
 (def focus-wrapper 
   (with-meta identity
@@ -85,30 +88,30 @@
         feedback (subscribe [:feedback])
         quiz-type (subscribe [:quiz-type])]
     (fn []
-      [:div.panel-container
-        [:div.counter (str (:correct-guesses @counter) "/" (:total-guesses @counter))]
+      [:div.quiz-free-text-container
         [:div.char (:hint @current-char)]
         (if (= @quiz-type "free-text")
           (do
             [:span
               [solution-input]
               [:span.feedback (when (not= @feedback "off") @feedback)]
-              [:button {:type "button"
-                       :on-click #(on-submit (:value @input) (:solution @current-char))}
-                       "Submit"]
-              [:button {:type "button"
-                       :on-click #(on-skip)}
-                       "Skip"]])
+              [:button.control {:type "button"
+                                :on-click #(on-submit (:value @input) (:solution @current-char))}
+                               "Submit"]
+              [:button.control {:type "button"
+                                :on-click #(on-skip)}
+                               "Skip"]])
           (do
             [:h3 "Multiple choice!"]))
-        [:button {:type "button"
-                 :on-click #(dispatch [:panel-changed "result"])}
-                 "Finish"]])))
+        [:button.control {:type "button"
+                          :on-click #(dispatch [:panel-changed "result"])}
+                         "Finish"]
+        [:div.counter (str (:correct-guesses @counter) "/" (:total-guesses @counter))]])))
 
 (defn result []
   (let [counter (subscribe [:counter])]
   (fn []
-    [:div.panel-container
+    [:div.result-container
       [:div "Congrats! You got "
             [:b (:correct-guesses @counter)]
             " out of "
@@ -123,7 +126,6 @@
     (fn []
       [:div.app-container
         [:div.chibi-container]
-        [:h1 "chibo"]
         [#(case @panel
             "quiz-options" [quiz-options]
             "quiz" [quiz]
