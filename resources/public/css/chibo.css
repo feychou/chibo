@@ -104,7 +104,7 @@ input[type="radio"]:checked + label span::after {
 }
 
 .quiz-free-text-container {
-  margin-top: 15px;
+  display: inline-block;
 }
 
 .char {
@@ -141,4 +141,12 @@ input[type=text]:focus {
 .result-container {
   display: inline-block;
   margin-top: 30px;
+}
+
+.counter {
+  margin-top: 5px;
+}
+
+.choices {
+  font-size: 40px;
 }

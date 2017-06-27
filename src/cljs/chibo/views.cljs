@@ -29,6 +29,16 @@
         [:label {:for type} 
           [:span (capitalize (replace type #"-" " "))]]])))
 
+(defn char-choice-input [char]
+  (fn []
+    [:span.input-wrapper
+      [:input {:id char
+               :name "char-choice"
+               :type "radio"}]
+      [:label {:for char}
+        [:span char]]]))
+
+
 (defn quiz-options []
   (let [quiz-options (subscribe [:quiz-options])
         alphabets (subscribe [:alphabets])
@@ -96,6 +106,15 @@
                           :on-click #(on-skip)}
                          "Skip"]])))
 
+(defn multiple-choice-mode []
+  (let [choices (subscribe [:choices])
+        current-char (subscribe [:current-char])]
+    (fn []
+      [:div.choices
+        (for [choice @choices]
+          ^{:key (:r choice)} [char-choice-input (:r choice)])
+        [char-choice-input (:solution @current-char)]])))
+
 (defn quiz []
   (let [current-char (subscribe [:current-char])
         counter (subscribe [:counter])
@@ -105,8 +124,7 @@
         [:div.char (:hint @current-char)]
         (if (= @quiz-type "free-text")
           [free-text-mode]
-          (do
-            [:h3 "Multiple choice!"]))
+          [multiple-choice-mode])
         [:button.control {:type "button"
                           :on-click #(dispatch [:panel-changed "result"])}
                          "Finish"]
