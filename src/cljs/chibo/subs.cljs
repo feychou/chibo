@@ -37,6 +37,11 @@
     (:quiz-type (:quiz db))))
 
 (reg-sub
+  :choices
+  (fn [db _]
+    (:choices (:quiz db))))
+
+(reg-sub
   :counter
   (fn [db _]
     (select-keys (:quiz db) [:correct-guesses :total-guesses])))

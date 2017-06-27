@@ -81,26 +81,30 @@
                  :on-key-press #(when (= 13 (.-which %))
                                   (on-submit (:value @input) (:solution @current-char)))}])]))
 
+(defn free-text-mode []
+  (let [feedback (subscribe [:feedback])
+        input (subscribe [:input])
+        current-char (subscribe [:current-char])]
+    (fn []
+      [:span
+        [solution-input]
+        [:span.feedback (when (not= @feedback "off") @feedback)]
+        [:button.control {:type "button"
+                          :on-click #(on-submit (:value @input) (:solution @current-char))}
+                         "Submit"]
+        [:button.control {:type "button"
+                          :on-click #(on-skip)}
+                         "Skip"]])))
+
 (defn quiz []
   (let [current-char (subscribe [:current-char])
-        input (subscribe [:input])
         counter (subscribe [:counter])
-        feedback (subscribe [:feedback])
         quiz-type (subscribe [:quiz-type])]
     (fn []
       [:div.quiz-free-text-container
         [:div.char (:hint @current-char)]
         (if (= @quiz-type "free-text")
-          (do
-            [:span
-              [solution-input]
-              [:span.feedback (when (not= @feedback "off") @feedback)]
-              [:button.control {:type "button"
-                                :on-click #(on-submit (:value @input) (:solution @current-char))}
-                               "Submit"]
-              [:button.control {:type "button"
-                                :on-click #(on-skip)}
-                               "Skip"]])
+          [free-text-mode]
           (do
             [:h3 "Multiple choice!"]))
         [:button.control {:type "button"
