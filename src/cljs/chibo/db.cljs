@@ -22,6 +22,7 @@
           :correct-guesses 0
           :feedback "off"
           :input {:value "" :disabled false}
+          :choices []
           :total-guesses 0
           :quiz-type "free-text"
           :from "hiragana"

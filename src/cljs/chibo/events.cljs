@@ -23,9 +23,13 @@
 (reg-event-db
   :quiz-started
   (fn [db _]
-    (let [random-char (rand-nth syllables)]
+    (let [random-char (rand-nth syllables)
+          choices (if (= (:quiz-type (:quiz db)) "multiple-choice")
+                      (take 3 (shuffle syllables))
+                      {})]
       (update-in (assoc db :panel "quiz") [:quiz] 
-       merge {:current-char (make-char (:quiz db) random-char)}))))
+       merge {:current-char (make-char (:quiz db) random-char)
+              :choices choices}))))
 
 (reg-event-db
   :input-value-updated
