@@ -10,12 +10,6 @@ h1, h2, h3 {
   padding: 0;
 }
 
-.app-container {
-  max-width: 700px;
-  margin: auto;
-  text-align: center;
-}
-
 button,
 button:active,
 button:focus {
@@ -32,4 +26,76 @@ button:focus {
 button:hover {
   transition: 0.3s background-color;
   background-color: #98fbc9;
+}
+
+label {
+  cursor: pointer;
+}
+
+label:hover {
+  font-weight: bold;
+  transition: 0.3s font-weight;
+}
+
+.app-container {
+  max-width: 650px;
+  margin: auto;
+  text-align: center;
+  margin-top: 100px;
+}
+
+.chibi-container {
+  background-image: url('../images/chibo.png');
+  background-repeat: no-repeat;
+  background-size: 150px 268px;
+  height: 268px;
+  width: 150px;
+  float: left;
+  margin-top: 10px;
+}
+
+.input-wrapper {
+  margin-right: 10px;
+}
+
+.input-wrapper label {
+  position: relative;
+}
+
+.input-wrapper span::before,
+.input-wrapper span::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+}
+
+.input-wrapper span::hover {
+  cursor: pointer;
+}
+.input-wrapper span::before {
+  left: -20px;
+  width: 17px;
+  height: 17px;
+  background-color: white;
+  border-radius: 50px;
+}
+
+input[type="radio"]:checked + label span::after {
+  left: -17px;
+  width: 11px;
+  height: 11px;
+  border-radius: 10px;
+  background-color: #98fbc9;
+  transition: left .25s, background-color .25s;
+}
+
+.group-label {
+  margin-right: 10px;
+  text-transform: uppercase;
+}
+
+.go-button {
+  margin-top: 10px;
 }

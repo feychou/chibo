@@ -6,25 +6,27 @@
 (defn alphabet-input [alphabet, input-name]
   (let [quiz-options (subscribe [:quiz-options])]
     (fn []
-      [:span
+      [:span.input-wrapper
         [:input {:id (str input-name "-" alphabet)
                  :name input-name
                  :type "radio"
                  :default-checked (= ((keyword input-name) @quiz-options) alphabet)
                  :on-click #(dispatch [:quiz-options-filtered {(keyword input-name) alphabet}])
                  :value true}]
-        [:label {:for (str input-name "-" alphabet)} alphabet]])))
+        [:label {:for (str input-name "-" alphabet)}
+          [:span (capitalize alphabet)]]])))
 
 (defn quiz-type-input [type]
   (let [quiz-options (subscribe [:quiz-options])]
     (fn []
-      [:span
+      [:span.input-wrapper
         [:input {:id type
                  :name "quiz-type"
                  :type "radio"
                  :default-checked (= (:quiz-type @quiz-options) type)
                  :on-click #(dispatch [:quiz-options-filtered {:quiz-type type}])}]
-        [:label {:for type} (capitalize (replace type #"-" " "))]])))
+        [:label {:for type} 
+          [:span (capitalize (replace type #"-" " "))]]])))
 
 (defn quiz-options []
   (let [quiz-options (subscribe [:quiz-options])
@@ -36,18 +38,18 @@
           [:div
             (for [quiz-type @quiz-types]
               ^{:key quiz-type} [quiz-type-input quiz-type])]
-          [:div [:b "From"]
+          [:div [:b.group-label "from"]
             (for [alphabet @alphabets]
               ^{:key alphabet} [alphabet-input alphabet "from"])]
-          [:div [:b "To"]
+          [:div [:b.group-label "to"]
             (for [alphabet @alphabets]
               ^{:key alphabet} [alphabet-input alphabet "to"])]
           [:div
-            [:button {:type "button"
-                     :on-click #(if (= (:from @quiz-options) (:to @quiz-options))
-                                  (js/alert "Invalid selection")
-                                  (dispatch [:quiz-started]))}
-                     "Go!"]]]])))
+            [:button.go-button {:type "button"
+                                :on-click #(if (= (:from @quiz-options) (:to @quiz-options))
+                                              (js/alert "Invalid selection")
+                                              (dispatch [:quiz-started]))}
+              "Go!"]]]])))
 
 (def focus-wrapper 
   (with-meta identity
@@ -120,6 +122,7 @@
   (let [panel (subscribe [:panel])]
     (fn []
       [:div.app-container
+        [:div.chibi-container]
         [:h1 "chibo"]
         [#(case @panel
             "quiz-options" [quiz-options]
