@@ -5,13 +5,13 @@
 
 (def quiz-interceptors [(path :quiz) trim-v])
 
-(defn make-char [quiz, random-char]
+(defn make-char [quiz random-char]
   {:hint ((keyword (first (:from quiz))) random-char)
    :solution ((keyword (first (:to quiz))) random-char)})
 
-(defn make-picks [quiz-type]
+(defn make-picks [quiz-type current-char]
   (if (= quiz-type "multiple-choice")
-    (take 3 (shuffle syllables))
+    (take 3 (shuffle (remove #(= (:r current-char) (:r %)) syllables)))
     []))
 
 (defn make-choices [coll current-char]
@@ -32,7 +32,7 @@
   :quiz-started
   (fn [db _]
     (let [random-char (rand-nth syllables)
-          picks (make-picks (:quiz-type (:quiz db)))]
+          picks (make-picks (:quiz-type (:quiz db)) random-char)]
       (update-in (assoc db :panel "quiz") [:quiz] 
        merge {:current-char (make-char (:quiz db) random-char)
               :choices (make-choices picks random-char)}))))
@@ -61,7 +61,7 @@
   quiz-interceptors
   (fn [quiz _]
     (let [random-char (rand-nth syllables)
-          picks (make-picks (:quiz-type quiz))]
+          picks (make-picks (:quiz-type quiz) random-char)]
       (merge quiz {:total-guesses (+ (:total-guesses quiz) 1)
                    :current-char (make-char quiz random-char)
                    :choices (make-choices picks random-char)}))))
