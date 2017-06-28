@@ -68,13 +68,14 @@
   (with-meta identity
     {:component-did-update #(.focus (dom-node %))}))
 
-(defn on-skip []
-  (.focus (.getElementById js/document "solution-input"))
+(defn on-skip [quiz-type]
+  (when (= quiz-type "free-text")
+    (.focus (.getElementById js/document "solution-input")))
   (dispatch [:char-skipped]))
 
 (defn on-submit [input-value solution]
   (if (= input-value solution)
-    ((dispatch [:right-option-picked]))
+    (dispatch [:right-option-picked])
     (dispatch [:wrong-option-picked])))
 
 (defn solution-input []
@@ -101,19 +102,14 @@
         [:span.feedback (when (not= @feedback "off") @feedback)]
         [:button.control {:type "button"
                           :on-click #(on-submit (:value @input) (:solution @current-char))}
-                         "Submit"]
-        [:button.control {:type "button"
-                          :on-click #(on-skip)}
-                         "Skip"]])))
+                         "Submit"]])))
 
 (defn multiple-choice-mode []
-  (let [choices (subscribe [:choices])
-        current-char (subscribe [:current-char])]
+  (let [choices (subscribe [:choices])]
     (fn []
       [:div.choices
         (for [choice @choices]
-          ^{:key (:r choice)} [char-choice-input (:r choice)])
-        [char-choice-input (:solution @current-char)]])))
+          ^{:key (:r choice)} [char-choice-input (:r choice)])])))
 
 (defn quiz []
   (let [current-char (subscribe [:current-char])
@@ -125,6 +121,9 @@
         (if (= @quiz-type "free-text")
           [free-text-mode]
           [multiple-choice-mode])
+        [:button.control {:type "button"
+                          :on-click #(on-skip quiz-type)}
+                         "Skip"]
         [:button.control {:type "button"
                           :on-click #(dispatch [:panel-changed "result"])}
                          "Finish"]

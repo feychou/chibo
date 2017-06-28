@@ -29,15 +29,6 @@ button:hover {
   background-color: #98fbc9;
 }
 
-label {
-  cursor: pointer;
-}
-
-label:hover {
-  font-weight: bold;
-  transition: 0.3s font-weight;
-}
-
 .app-container {
   max-width: 650px;
   margin: 100px auto;
@@ -63,6 +54,12 @@ label:hover {
 
 .input-wrapper label {
   position: relative;
+  cursor: pointer;
+}
+
+.input-wrapper label:hover {
+  font-weight: bold;
+  transition: 0.3s font-weight;
 }
 
 .input-wrapper span::before,
@@ -109,6 +106,7 @@ input[type="radio"]:checked + label span::after {
 
 .char {
   font-size: 70px;
+  line-height: 1.5;
 }
 
 button.control {
@@ -117,8 +115,9 @@ button.control {
 
 input[type=text] {
   font-family: 'Indie Flower', cursive;
-  font-size: 18px;
-  padding: 10px 10px;
+  font-size: 35px;
+  padding: 8px 8px;
+  max-width: 200px;
   margin: 8px 0;
   display: inline-block;
   border: 1px solid #ccc;
