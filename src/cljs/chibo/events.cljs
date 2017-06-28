@@ -5,9 +5,9 @@
 
 (def quiz-interceptors [(path :quiz) trim-v])
 
-(defn make-char [quiz random-char]
-  {:hint ((keyword (first (:from quiz))) random-char)
-   :solution ((keyword (first (:to quiz))) random-char)})
+(defn make-char [quiz current-char]
+  {:hint ((keyword (first (:from quiz))) current-char)
+   :solution ((keyword (first (:to quiz))) current-char)})
 
 (defn make-picks [quiz-type current-char]
   (if (= quiz-type "multiple-choice")
@@ -16,6 +16,9 @@
 
 (defn make-choices [coll current-char]
   (shuffle (conj coll current-char)))
+
+(defn make-random-char []
+  (rand-nth (shuffle syllables)))
 
 (reg-event-db
   :initialize-db
@@ -31,11 +34,11 @@
 (reg-event-db
   :quiz-started
   (fn [db _]
-    (let [random-char (rand-nth syllables)
-          picks (make-picks (:quiz-type (:quiz db)) random-char)]
+    (let [current-char (make-random-char)
+          picks (make-picks (:quiz-type (:quiz db)) current-char)]
       (update-in (assoc db :panel "quiz") [:quiz] 
-       merge {:current-char (make-char (:quiz db) random-char)
-              :choices (make-choices picks random-char)}))))
+       merge {:current-char (make-char (:quiz db) current-char)
+              :choices (make-choices picks current-char)}))))
 
 (reg-event-db
   :input-value-updated
@@ -53,18 +56,18 @@
   :new-char
   quiz-interceptors
   (fn [quiz]
-    (let [random-char (rand-nth syllables)]
-      (assoc quiz :current-char (make-char quiz random-char)))))
+    (let [current-char (make-random-char)]
+      (assoc quiz :current-char (make-char quiz current-char)))))
 
 (reg-event-db
   :char-skipped
   quiz-interceptors
   (fn [quiz _]
-    (let [random-char (rand-nth syllables)
-          picks (make-picks (:quiz-type quiz) random-char)]
+    (let [current-char (make-random-char)
+          picks (make-picks (:quiz-type quiz) current-char)]
       (merge quiz {:total-guesses (+ (:total-guesses quiz) 1)
-                   :current-char (make-char quiz random-char)
-                   :choices (make-choices picks random-char)}))))
+                   :current-char (make-char quiz current-char)
+                   :choices (make-choices picks current-char)}))))
 
 (reg-event-fx
   :feedback-clear
