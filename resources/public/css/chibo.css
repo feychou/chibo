@@ -149,3 +149,16 @@ input[type=text]:focus {
 .choices {
   font-size: 40px;
 }
+
+.multiple-choice-char {
+  margin-bottom: -20px;
+}
+
+.choice-row {
+  min-width: 200px;
+  text-align: right;
+}
+
+span.choice:first-child {
+  float: left;
+};

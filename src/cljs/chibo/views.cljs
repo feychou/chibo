@@ -31,7 +31,7 @@
 
 (defn char-choice-input [char]
   (fn []
-    [:span.input-wrapper
+    [:span.input-wrapper.choice
       [:input {:id char
                :name "char-choice"
                :type "radio"}]
@@ -98,26 +98,33 @@
         current-char (subscribe [:current-char])]
     (fn []
       [:span
-        [solution-input]
-        [:span.feedback (when (not= @feedback "off") @feedback)]
-        [:button.control {:type "button"
-                          :on-click #(on-submit (:value @input) (:solution @current-char))}
-                         "Submit"]])))
+        [:div.char (:hint @current-char)]
+        [:span
+          [solution-input]
+          [:span.feedback (when (not= @feedback "off") @feedback)]
+          [:button.control {:type "button"
+                            :on-click #(on-submit (:value @input) (:solution @current-char))}
+                           "Submit"]]])))
 
 (defn multiple-choice-mode []
-  (let [choices (subscribe [:choices])]
+  (let [choices (subscribe [:choices])
+        current-char (subscribe [:current-char])]
     (fn []
-      [:div.choices
-        (for [choice @choices]
-          ^{:key (:r choice)} [char-choice-input (:r choice)])])))
+      [:span
+        [:div.char.multiple-choice-char (:hint @current-char)]
+        [:div.choices
+          [:div.choice-row
+            (for [choice (take 2 @choices)]
+              ^{:key (:r choice)} [char-choice-input (:r choice)])]
+          [:div.choice-row
+            (for [choice (take-last 2 @choices)]
+              ^{:key (:r choice)} [char-choice-input (:r choice)])]]])))
 
 (defn quiz []
-  (let [current-char (subscribe [:current-char])
-        counter (subscribe [:counter])
+  (let [counter (subscribe [:counter])
         quiz-type (subscribe [:quiz-type])]
     (fn []
       [:div.quiz-free-text-container
-        [:div.char (:hint @current-char)]
         (if (= @quiz-type "free-text")
           [free-text-mode]
           [multiple-choice-mode])
