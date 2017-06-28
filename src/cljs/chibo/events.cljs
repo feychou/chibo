@@ -14,8 +14,10 @@
     (take 3 (shuffle (remove #(= (:r current-char) (:r %)) syllables)))
     []))
 
-(defn make-choices [coll current-char]
-  (shuffle (conj coll current-char)))
+(defn make-choices [picks current-char]
+  (shuffle
+    (conj (reduce #(conj %1 (:r %2)) [] picks)
+          (:r current-char))))
 
 (defn make-random-char []
   (rand-nth (shuffle syllables)))
