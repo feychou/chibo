@@ -80,10 +80,12 @@
 
 (defn solution-input []
   (let [current-char (subscribe [:current-char])
-        input (subscribe [:input])]
+        input (subscribe [:input])
+        feedback (subscribe [:feedback])]
     [focus-wrapper
       (fn []
         [:input {:type "text"
+                 :class-name @feedback
                  :id "solution-input"
                  :auto-focus true
                  :value (:value @input)
@@ -93,15 +95,13 @@
                                   (on-submit (:value @input) (:solution @current-char)))}])]))
 
 (defn free-text-mode []
-  (let [feedback (subscribe [:feedback])
-        input (subscribe [:input])
+  (let [input (subscribe [:input])
         current-char (subscribe [:current-char])]
     (fn []
       [:span
         [:div.char (:hint @current-char)]
         [:span
           [solution-input]
-          [:span.feedback (when (not= @feedback "off") @feedback)]
           [:button.control {:type "button"
                             :on-click #(on-submit (:value @input) (:solution @current-char))}
                            "Submit"]]])))

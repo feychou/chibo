@@ -113,7 +113,8 @@ button.control {
   margin: 15px 5px 0;
 }
 
-input[type=text] {
+input[type=text],
+input[type=text]:disabled {
   font-family: 'Indie Flower', cursive;
   font-size: 35px;
   padding: 8px 8px;
@@ -123,6 +124,16 @@ input[type=text] {
   border: 1px solid #ccc;
   border-radius: 4px;
   box-sizing: border-box;
+}
+
+input[type=text].right:disabled {
+  background-color: #98fbc9;
+  opacity: 0.8;
+}
+
+input[type=text].wrong:disabled {
+  background-color: #ff7d7d;
+  opacity: 0.8;
 }
 
 input[type=text]:focus {

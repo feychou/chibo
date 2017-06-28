@@ -78,10 +78,11 @@
 (reg-event-fx
   :wrong-option-picked
   (fn [{:keys [db]} _]
-    (let [quiz (:quiz db)]
+    (let [quiz (:quiz db)
+          input-value (:value (:input quiz))]
       {:db (update-in db [:quiz]
             merge {:feedback "wrong"
-                   :input {:value ""
+                   :input {:value input-value
                            :disabled true}
                    :total-guesses (+ (:total-guesses quiz) 1)})
        :dispatch-later [{:ms 800 :dispatch [:feedback-clear]}]})))
@@ -89,10 +90,11 @@
 (reg-event-fx
   :right-option-picked
   (fn [{:keys [db]} _]
-    (let [quiz (:quiz db)]
+    (let [quiz (:quiz db)
+          input-value (:value (:input quiz))]
       {:db (update-in db [:quiz]
             merge {:feedback "right"
-                   :input {:value ""
+                   :input {:value input-value
                            :disabled true}
                    :correct-guesses (+ (:correct-guesses quiz) 1)
                    :total-guesses (+ (:total-guesses quiz) 1)})
