@@ -56,8 +56,10 @@
   :new-char
   quiz-interceptors
   (fn [quiz]
-    (let [current-char (make-random-char)]
-      (assoc quiz :current-char (make-char quiz current-char)))))
+    (let [current-char (make-random-char)
+          picks (make-picks (:quiz-type quiz) current-char)]
+      (assoc quiz :current-char (make-char quiz current-char)
+                  :choices (make-choices picks current-char)))))
 
 (reg-event-db
   :char-skipped

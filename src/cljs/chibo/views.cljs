@@ -3,6 +3,20 @@
             [reagent.core :refer [atom dom-node]]
             [clojure.string :refer [replace capitalize]]))
 
+(defn on-submit [input-value solution]
+  (if (= input-value solution)
+    (dispatch [:right-option-picked])
+    (dispatch [:wrong-option-picked])))
+
+(def focus-wrapper 
+  (with-meta identity
+    {:component-did-update #(.focus (dom-node %))}))
+
+(defn on-skip [quiz-type]
+  (when (= quiz-type "free-text")
+    (.focus (.getElementById js/document "solution-input")))
+  (dispatch [:char-skipped]))
+
 (defn alphabet-input [alphabet, input-name]
   (let [quiz-options (subscribe [:quiz-options])
         id (str input-name "-" alphabet)]
@@ -30,13 +44,15 @@
           [:span (capitalize (replace type #"-" " "))]]])))
 
 (defn char-choice-input [char]
-  (fn []
-    [:span.input-wrapper.choice
-      [:input {:id char
-               :name "char-choice"
-               :type "radio"}]
-      [:label {:for char}
-        [:span char]]]))
+  (let [current-char (subscribe [:current-char])]
+    (fn []
+      [:span.input-wrapper.choice
+        [:input {:id char
+                 :name "char-choice"
+                 :type "radio"
+                 :on-click #(on-submit (.-target.id %) (:solution @current-char))}]
+        [:label {:for char}
+          [:span char]]])))
 
 
 (defn quiz-options []
@@ -63,20 +79,6 @@
                                                 (js/alert "Invalid selection")
                                                 (dispatch [:quiz-started]))}
                 "Go!"]]]]])))
-
-(def focus-wrapper 
-  (with-meta identity
-    {:component-did-update #(.focus (dom-node %))}))
-
-(defn on-skip [quiz-type]
-  (when (= quiz-type "free-text")
-    (.focus (.getElementById js/document "solution-input")))
-  (dispatch [:char-skipped]))
-
-(defn on-submit [input-value solution]
-  (if (= input-value solution)
-    (dispatch [:right-option-picked])
-    (dispatch [:wrong-option-picked])))
 
 (defn solution-input []
   (let [current-char (subscribe [:current-char])
