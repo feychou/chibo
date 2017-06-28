@@ -120,10 +120,10 @@
         [:div.choices
           [:div.choice-row
             (for [choice (take 2 @choices)]
-              ^{:key (:r choice)} [char-choice-input (:r choice)])]
+              ^{:key choice} [char-choice-input choice])]
           [:div.choice-row
             (for [choice (take-last 2 @choices)]
-              ^{:key (:r choice)} [char-choice-input (:r choice)])]]])))
+              ^{:key choice} [char-choice-input choice])]]])))
 
 (defn quiz []
   (let [counter (subscribe [:counter])

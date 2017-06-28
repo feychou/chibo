@@ -14,10 +14,11 @@
     (take 3 (shuffle (remove #(= (:r current-char) (:r %)) syllables)))
     []))
 
-(defn make-choices [picks current-char]
-  (shuffle
-    (conj (reduce #(conj %1 (:r %2)) [] picks)
-          (:r current-char))))
+(defn make-choices [picks current-char to]
+  (let [char-key (keyword (first to))]
+    (shuffle
+      (conj (reduce #(conj %1 (char-key %2)) [] picks)
+            (char-key current-char)))))
 
 (defn make-random-char []
   (rand-nth (shuffle syllables)))
@@ -36,11 +37,12 @@
 (reg-event-db
   :quiz-started
   (fn [db _]
-    (let [current-char (make-random-char)
-          picks (make-picks (:quiz-type (:quiz db)) current-char)]
+    (let [quiz (:quiz db)
+          current-char (make-random-char)
+          picks (make-picks (:quiz-type quiz) current-char)]
       (update-in (assoc db :panel "quiz") [:quiz] 
-       merge {:current-char (make-char (:quiz db) current-char)
-              :choices (make-choices picks current-char)}))))
+       merge {:current-char (make-char quiz current-char)
+              :choices (make-choices picks current-char (:to quiz))}))))
 
 (reg-event-db
   :input-value-updated
@@ -61,7 +63,7 @@
     (let [current-char (make-random-char)
           picks (make-picks (:quiz-type quiz) current-char)]
       (assoc quiz :current-char (make-char quiz current-char)
-                  :choices (make-choices picks current-char)))))
+                  :choices (make-choices picks current-char (:to quiz))))))
 
 (reg-event-db
   :char-skipped
@@ -71,7 +73,7 @@
           picks (make-picks (:quiz-type quiz) current-char)]
       (merge quiz {:total-guesses (+ (:total-guesses quiz) 1)
                    :current-char (make-char quiz current-char)
-                   :choices (make-choices picks current-char)}))))
+                   :choices (make-choices picks current-char (:to quiz))}))))
 
 (reg-event-fx
   :feedback-clear
