@@ -163,6 +163,21 @@ input[type=text]:focus {
 
 .multiple-choice-char {
   margin-bottom: -20px;
+  position: relative;
+}
+
+.multiple-choice-char .feedback {
+  font-size: 40px;
+  position: absolute;
+  top: 35px;
+}
+
+.multiple-choice-char .feedback.wrong {
+  color: #ff7d7d;
+}
+
+.multiple-choice-char .feedback.right {
+  color: #98fbc9;
 }
 
 .choice-row {

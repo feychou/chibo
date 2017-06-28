@@ -110,10 +110,13 @@
 
 (defn multiple-choice-mode []
   (let [choices (subscribe [:choices])
-        current-char (subscribe [:current-char])]
+        current-char (subscribe [:current-char])
+        feedback (subscribe [:feedback])]
     (fn []
       [:span
-        [:div.char.multiple-choice-char (:hint @current-char)]
+        [:div.char.multiple-choice-char (:hint @current-char)
+          (when (= @feedback "wrong") [:span.feedback.wrong "✘"])
+          (when (= @feedback "right") [:span.feedback.right "✔"])]
         [:div.choices
           [:div.choice-row
             (for [choice (take 2 @choices)]
