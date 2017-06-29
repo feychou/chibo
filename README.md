@@ -1,6 +1,13 @@
 # chibo
 :sushi: :kimono: :tea:  Test your ひらがな and カタカナ knowledge
 
+In order to run your dev version after cloning the repo, run this:
+
+```
+lein clean
+lein figwheel dev
+```
+
 Chibo looks like this:
 
 ![Chibo Menu](http://i.imgur.com/aH0CUrN.png)
