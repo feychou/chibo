@@ -44,12 +44,14 @@
           [:span (capitalize (replace type #"-" " "))]]])))
 
 (defn char-choice-input [char]
-  (let [current-char (subscribe [:current-char])]
+  (let [current-char (subscribe [:current-char])
+        feedback (subscribe [:feedback])]
     (fn []
       [:span.input-wrapper.choice
         [:input {:id char
                  :name "char-choice"
                  :type "radio"
+                 :disabled (not= @feedback "off")
                  :on-click #(on-submit (.-target.id %) (:solution @current-char))}]
         [:label {:for char}
           [:span char]]])))
