@@ -21,7 +21,7 @@
   (let [quiz-options (subscribe [:quiz-options])
         id (str input-name "-" alphabet)]
     (fn []
-      [:span.input-wrapper
+      [:span.input-wrapper.option
         [:input {:id id
                  :name input-name
                  :type "radio"
@@ -34,7 +34,7 @@
 (defn quiz-type-input [type]
   (let [quiz-options (subscribe [:quiz-options])]
     (fn []
-      [:span.input-wrapper
+      [:span.input-wrapper.option
         [:input {:id type
                  :name "quiz-type"
                  :type "radio"

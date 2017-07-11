@@ -48,7 +48,7 @@ button:hover {
   float: left;
 }
 
-.input-wrapper {
+.input-wrapper.option {
   margin-right: 30px;
 }
 
@@ -163,6 +163,7 @@ input[type=text]:focus {
 
 .choices {
   font-size: 40px;
+  padding-left: 20px;
 }
 
 .multiple-choice-char {
